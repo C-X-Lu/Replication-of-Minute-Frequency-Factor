@@ -66,13 +66,13 @@ class Factor:
         r"""
         使用分钟频数据计算因子暴露。如果已有已计算的部分则更新至最新数据。
         :param calculate_method: 因子计算方法
-        :param path: 因子暴露的保存路径，默认为‘D:\quant\MinuteFreqFactor’
+        :param path: 因子暴露的保存路径，默认为"\QuantData\MinuteFreqFactor"
         :param need_daily_data: 是否需要日频量价数据，默认为False
         :param n_jobs:
         """
         factor_exposure = self._read_exposure(
             factor_name=self.factor_name,
-            default_path=r'D:\QuantData\MinuteFreqFactor',
+            default_path=r'\QuantData\MinuteFreqFactor',
             path=path
         )
 
@@ -94,10 +94,10 @@ class Factor:
         valid_results = []
         if len(pv_data_index) > 0:
             if need_daily_data & (n_jobs is None):  # 如果需要日频量价数据
-                daily_pv = pl.read_parquet(r'D:\QuantData\Price_volume.parquet')
+                daily_pv = pl.read_parquet(r'\QuantData\Price_volume.parquet')
                 n_jobs = 1
             elif need_daily_data & (n_jobs is not None):
-                daily_pv = pl.read_parquet(r'D:\QuantData\Price_volume.parquet')
+                daily_pv = pl.read_parquet(r'\QuantData\Price_volume.parquet')
                 n_jobs = n_jobs
             elif (~need_daily_data) & (n_jobs is None):
                 daily_pv = None
@@ -165,7 +165,7 @@ class Factor:
             'LimitUp': 'limit_up'
         }
         pv_data = (
-            pl.scan_parquet(r'D:\QuantData\Price_Volume.parquet')
+            pl.scan_parquet(r'\QuantData\Price_Volume.parquet')
             .with_columns(
                 pl.col('Trddt')
                 .str.to_date(format='%Y-%m-%d')
@@ -190,29 +190,29 @@ class Factor:
             need_daily_pv_data: bool=False,
             depend_columns: List[str]=None
     ):
-        """
+        r"""
         使用中间因子计算因子暴露。
         :param calculate_method: 计算方法
         :param intermediate: 中间变量。可以传递为"PanDeng"或["ZhaoMoChenWu", "WuBiGuMu"]
-        :param path: 因子暴露的保存路径，默认为‘D:/QuantData/MinuteFreqFactor’
-        :param intermediate_path: 中间因子的保存路径，默认为‘D:/QuantData/MinuteFreqFactor/FangZheng Factor/Intermediate Factor’
+        :param path: 因子暴露的保存路径，默认为"\QuantData\MinuteFreqFactor’
+        :param intermediate_path: 中间因子的保存路径，默认为‘\QuantData\MinuteFreqFactor\FangZheng Factor\Intermediate Factor’
         :param depend_past_days: 依赖过去多少天的值，默认为20
         :param need_daily_pv_data: 是否需要日频量价数据
         :param depend_columns: 依赖的列，在需要日频量价数据时可以传递
         """
         factor_exposure = self._read_exposure(
             factor_name=self.factor_name,
-            default_path=r'D:\QuantData\MinuteFreqFactor',
+            default_path=r'\QuantData\MinuteFreqFactor',
             path=path
         )
 
         minute_freq_factors = [
             file_name.removesuffix('.parquet')
-            for file_name in os.listdir(r'D:\QuantData\MinuteFreqFactor')
+            for file_name in os.listdir(r'\QuantData\MinuteFreqFactor')
         ]  # 分钟频因子集
         daily_freq_factors = [
             file_name.removesuffix('.parquet')
-            for file_name in os.listdir(r'D:\QuantData\DailyFreqFactor')
+            for file_name in os.listdir(r'\QuantData\DailyFreqFactor')
         ]  # 日频因子集
         if intermediate_path is None:
             special_factors = []
@@ -227,7 +227,7 @@ class Factor:
             if intermediate_name in minute_freq_factors:
                 if folder_path is None:
                     folder_path = (
-                        r'D:\QuantData\MinuteFreqFactor'
+                        r'\QuantData\MinuteFreqFactor'
                     )
                 return os.path.join(
                     folder_path,
@@ -236,7 +236,7 @@ class Factor:
             elif intermediate_name in daily_freq_factors:
                 if folder_path is None:
                     folder_path = (
-                        r'D:\QuantData\DailyFreqFactor'
+                        r'\QuantData\DailyFreqFactor'
                     )
                 return os.path.join(
                     folder_path,
@@ -435,7 +435,7 @@ class Factor:
     def to_parquet(self, path: str=None):
         r"""
         将数据保存为parquet。
-        :param path: 保存的路径, 默认路径为'D:\QuantData\MinuteFreqFactor', 默认名称为因子名。
+        :param path: 保存的路径, 默认路径为'\QuantData\MinuteFreqFactor', 默认名称为因子名。
         """
         if path is None:
             path = r'D:\QuantData\MinuteFreqFactor'
@@ -719,3 +719,4 @@ class Factor:
         if return_df:  # 返回DataFrame
             return group_df
         return None
+
